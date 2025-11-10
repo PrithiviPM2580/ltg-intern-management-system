@@ -1,21 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "es2022",
-    "types": ["node"],
-    "module": "node20",
-    "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": "src",
-    "strict": true,
-    "esModuleInterop": true,
-    "removeComments": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@/*": ["src/*"],
-      "@types/*": ["types/*"]
-    }
-  },
-  "include": ["types/**/*.d.ts", "src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+	"compilerOptions": {
+		"target": "es2022",
+		"types": ["node"],
+		"module": "node20",
+		"outDir": "dist",
+		"rootDir": "src",
+		"baseUrl": "src",
+		"strict": true,
+		"esModuleInterop": true,
+		"removeComments": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"paths": {
+			"@/*": ["src/*"],
+			"@types/*": ["types/*"]
+		}
+	},
+	"include": ["types/**/*.d.ts", "src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
 }
