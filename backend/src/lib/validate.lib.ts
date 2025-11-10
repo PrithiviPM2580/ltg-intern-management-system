@@ -1,5 +1,6 @@
 import { z } from "zod";
 import logger from "./logger.lib.js";
+import { APIError } from "utils/index.utils.js";
 
 const validate = <T>(schema: z.ZodType<T>, data: unknown): T => {
   const parsedData = schema.safeParse(data);
@@ -13,7 +14,10 @@ const validate = <T>(schema: z.ZodType<T>, data: unknown): T => {
       label: "ValidateLib",
       issues,
     });
-    throw new Error(`Validation failed: ${JSON.stringify(issues)}`);
+    throw new APIError(500, "Validation Error", {
+      type: "ValidationError",
+      details: issues,
+    });
   }
 
   return parsedData.data;
