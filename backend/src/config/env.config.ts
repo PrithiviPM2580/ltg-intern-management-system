@@ -8,6 +8,7 @@ const envConfig = {
   DB_URL: process.env.DB_URL!,
   DB_NAME: process.env.DB_NAME!,
   APP_NAME: process.env.APP_NAME!,
+  LOG_LEVEL: process.env.LOG_LEVEL!,
 };
 
 const config = validate(envSchema, envConfig);
