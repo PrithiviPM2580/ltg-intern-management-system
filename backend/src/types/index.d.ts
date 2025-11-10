@@ -1,3 +1,5 @@
+import type { Request, Response } from "express";
+
 declare global {
   type ErrorDetail = {
     field?: string;
@@ -10,6 +12,14 @@ declare global {
   };
 
   type APIErrorType = string | ErrorInfo;
+
+  interface LogOptions {
+    req: Request;
+    res?: Response;
+    message: string;
+    data?: unknown;
+    error?: unknown;
+  }
 }
 
 export {};
