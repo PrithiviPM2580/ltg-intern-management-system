@@ -1,3 +1,5 @@
+import logger from "lib/logger.lib.js";
+
 export class APIError extends Error {
   public readonly statusCode: number;
   public readonly success: boolean;
@@ -22,3 +24,30 @@ export class APIError extends Error {
     }
   }
 }
+export const timeStampToDate = () => {
+  return new Date().toISOString();
+};
+
+export const logRequest = ({ req, res, message, data, error }: LogOptions) => {
+  const start = req.startTime || Date.now();
+  const responseTime = `${Date.now() - start}ms`;
+
+  const meta: Record<string, unknown> = {
+    timestamp: timeStampToDate(),
+    method: req.method,
+    url: req.originalUrl,
+    baseUrl: req.baseUrl || "",
+    ip: req.ip || req.socket.remoteAddress,
+    userAgent: req.headers["user-agent"] || "",
+    body: req.body || {},
+    query: req.query || {},
+    params: req.params || {},
+    statusCode: res?.statusCode,
+    responseTime,
+  };
+
+  if (data) meta.data = data;
+  if (error) meta.error = error;
+
+  error ? logger.error(message, meta) : logger.info(message, meta);
+};
