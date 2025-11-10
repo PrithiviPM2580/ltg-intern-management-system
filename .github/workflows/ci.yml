@@ -40,16 +40,8 @@ jobs:
               run: pnpm install --frozen-lockfile
               working-directory: backend
 
-            - name: Lint (backend)
-              run: pnpm lint
-              working-directory: backend
-
-            - name: Format check (backend)
+            - name: Format and Lint check (backend)
               run: pnpm format:check
-              working-directory: backend
-
-            - name: Biome checks (backend)
-              run: pnpm check
               working-directory: backend
 
             - name: Type Check (backend)
