@@ -1,1 +1,3 @@
-console.log("Hello Prithivi");
+import startServer from "server.js";
+
+startServer();
