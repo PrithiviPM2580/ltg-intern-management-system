@@ -30,8 +30,7 @@ export const timeStampToDate = () => {
 };
 
 export const logRequest = ({ req, res, message, data, error }: LogOptions) => {
-  const start = req.startTime || Date.now();
-  const responseTime = `${Date.now() - start}ms`;
+  const responseTime = `${Date.now() - (res?.locals.startTime || 0)}ms`;
 
   const meta: Record<string, unknown> = {
     timestamp: timeStampToDate(),
@@ -50,7 +49,9 @@ export const logRequest = ({ req, res, message, data, error }: LogOptions) => {
   if (data) meta.data = data;
   if (error) meta.error = error;
 
-  error ? logger.error(message, meta) : logger.info(message, meta);
+  error
+    ? logger.error(message || "Error occurred in middleware", meta)
+    : logger.info(message || "Request completed", meta);
 };
 
 export const keyGetter = (req: Request): string => {
