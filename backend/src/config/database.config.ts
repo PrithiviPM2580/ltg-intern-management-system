@@ -1,6 +1,6 @@
 import mongoose, { ConnectOptions } from "mongoose";
-import { APIError } from "utils/index.utils.js";
-import logger from "lib/logger.lib.js";
+import { APIError } from "@/utils/index.utils.js";
+import logger from "@/lib/logger.lib.js";
 import config from "./env.config.js";
 
 const connectOptions: ConnectOptions = {

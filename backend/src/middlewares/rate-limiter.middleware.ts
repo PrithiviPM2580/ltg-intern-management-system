@@ -1,11 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
-import logger from "lib/logger.lib.js";
+import logger from "@/lib/logger.lib.js";
 import {
   RateLimiterMemory,
   RateLimiterRes,
   IRateLimiterOptions,
 } from "rate-limiter-flexible";
-import { APIError, keyGetter, logRequest } from "utils/index.utils.js";
+import { APIError, keyGetter } from "@/utils/index.utils.js";
 
 const adminOptions: IRateLimiterOptions = {
   points: 200, // 200 requests
@@ -32,9 +32,9 @@ export const limiters = {
 };
 
 const rateLimitMiddleware =
-  (limiter: RateLimiterMemory, keyGetter: (req: Request) => string) =>
+  (limiter: RateLimiterMemory, getKey: (req: Request) => string = keyGetter) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const key = keyGetter(req);
+    const key = getKey(req);
     try {
       const rateLimitRes: RateLimiterRes = await limiter.consume(key);
 
@@ -74,3 +74,5 @@ const rateLimitMiddleware =
       return next(error);
     }
   };
+
+export default rateLimitMiddleware;

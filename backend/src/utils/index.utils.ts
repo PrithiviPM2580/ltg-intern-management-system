@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import logger from "lib/logger.lib.js";
+import logger from "@/lib/logger.lib.js";
 
 export class APIError extends Error {
   public readonly statusCode: number;

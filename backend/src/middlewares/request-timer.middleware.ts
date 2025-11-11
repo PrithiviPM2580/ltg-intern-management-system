@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { logRequest } from "utils/index.utils.js";
+import { logRequest } from "@/utils/index.utils.js";
 
 const requestTimerMiddleware = (
   req: Request,
