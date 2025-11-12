@@ -1,9 +1,9 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 const loginContoller = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+	_req: Request,
+	_res: Response,
+	_next: NextFunction,
 ): Promise<void> => {};
 
 export default loginContoller;
