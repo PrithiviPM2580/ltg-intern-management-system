@@ -7,8 +7,12 @@ import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
 import mongoose from "mongoose";
 
-// Create router instance
+// Create a new router instance
 const router = Router();
+
+// ------------------------------------------------------
+// 1️⃣ Root Route
+// ------------------------------------------------------
 
 router.route("/").get((req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,7 +25,7 @@ router.route("/").get((req: Request, res: Response, next: NextFunction) => {
         appName: "LTG Intern Management System",
         status: "running",
         timestamp: new Date().toISOString(),
-        version: "1.0.0",
+        version: config.APP_VERSION,
         env: config.NODE_ENV,
       }
     );
@@ -30,6 +34,10 @@ router.route("/").get((req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 });
+
+// ------------------------------------------------------
+// 2️⃣ Health Check Route
+// ------------------------------------------------------
 
 router
   .route("/health")
@@ -42,6 +50,7 @@ router
         service: " LTG Intern Management System",
         database: dbState,
         uptime: process.uptime(),
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024 + " MB",
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
