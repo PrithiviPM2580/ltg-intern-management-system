@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import logger from "@/lib/logger.lib.js";
+import { ZodError } from "zod";
+
 export const timeStampToDate = () => {
   return new Date().toISOString();
 };
@@ -56,4 +58,11 @@ export const successResponse = <T>(
     message,
     data,
   });
+};
+
+export const formatIssues = (issues: ZodError["issues"]) => {
+  return issues.map((issue) => ({
+    field: issue.path.join("."),
+    message: issue.message,
+  }));
 };
