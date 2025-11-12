@@ -9,8 +9,8 @@ const validatePart = (
   schema: ZodSchema,
   req: Request,
   next: NextFunction
-) => {
-  if (!schema) return;
+): boolean => {
+  if (!schema) return true;
 
   const result = schema.safeParse(req[part]);
 
@@ -21,24 +21,29 @@ const validatePart = (
       issues,
     });
 
-    return next(
+    next(
       new APIError(400, "Validation Error", {
         type: "ValidationError",
         details: issues,
       })
     );
+    return false;
   }
 
   Object.assign(req[part], result.data);
+  return true;
 };
 
 const validateRequestMiddleware =
   (schema: RequestValidate) =>
   (req: Request, res: Response, next: NextFunction): void => {
     try {
-      validatePart("body", schema.body!, req, next);
-      validatePart("query", schema.query!, req, next);
-      validatePart("params", schema.params!, req, next);
+      const bodyValid = validatePart("body", schema.body!, req, next);
+      if (!bodyValid) return;
+      const queryValid = validatePart("query", schema.query!, req, next);
+      if (!queryValid) return;
+      const paramsValid = validatePart("params", schema.params!, req, next);
+      if (!paramsValid) return;
       next();
     } catch (error) {
       logger.error("Unexpected error in validation middleware", {
