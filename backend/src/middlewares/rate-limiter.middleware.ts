@@ -20,7 +20,7 @@ const authOptions: IRateLimiterOptions = {
   blockDuration: 300, // block for 5 minutes if consumed more than points
 };
 
-const userOptions: IRateLimiterOptions = {
+const internOptions: IRateLimiterOptions = {
   points: 100, // 100 requests
   duration: 60, // per 60 seconds
   blockDuration: 300, // block for 5 minutes if consumed more than points
@@ -29,10 +29,10 @@ const userOptions: IRateLimiterOptions = {
 export const limiters = {
   adminLimiter: new RateLimiterMemory(adminOptions),
   authLimiter: new RateLimiterMemory(authOptions),
-  userLimiter: new RateLimiterMemory(userOptions),
+  internLimiter: new RateLimiterMemory(internOptions),
 };
 
-const rateLimitMiddleware =
+export const rateLimitMiddleware =
   (limiter: RateLimiterMemory, getKey: (req: Request) => string = keyGetter) =>
   async (req: Request, res: Response, next: NextFunction) => {
     const key = getKey(req);
@@ -75,5 +75,3 @@ const rateLimitMiddleware =
       return next(error);
     }
   };
-
-export default rateLimitMiddleware;

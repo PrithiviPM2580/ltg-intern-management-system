@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import config from "@/config/env.config.js";
 import { logRequest, successResponse } from "@/utils/index.utils.js";
 import APIError from "@/utils/errors.utils.js";
+import authRoute from "@/routes/auth.routes.js";
 
 // Create a new router instance
 const router = Router();
@@ -77,5 +78,10 @@ router.use((req: Request, res: Response, next: NextFunction) => {
     })
   );
 });
+
+// ------------------------------------------------------
+// 4️⃣ Auth Routes
+// ------------------------------------------------------
+router.use("/api/v1/auth", authRoute);
 
 export default router;
