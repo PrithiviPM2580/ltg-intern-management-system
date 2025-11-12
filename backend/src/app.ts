@@ -2,15 +2,16 @@
 //  🔹 App Section
 // ============================================
 import express, { type Express } from "express";
+
 const app: Express = express();
 
 // ------------------------------------------------------
 // 1️⃣ Imports
 // ------------------------------------------------------
 import routes from "@/routes/index.routes.js";
+import compressionMiddleware from "./middlewares/compression.middleware.js";
 import globalErrorHandler from "./middlewares/global-error-handler.middleware.js";
 import requestTimerMiddleware from "./middlewares/request-timer.middleware.js";
-import compressionMiddleware from "./middlewares/compression.middleware.js";
 
 // ------------------------------------------------------
 // 2️⃣ Middleware
