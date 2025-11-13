@@ -23,7 +23,7 @@ export interface ICertificate {
   certificateId: string;
   complitionScore: number;
   grade: "A+" | "A" | "B+" | "B" | "C+" | "C" | "D+" | "D" | "E+" | "E";
-  instructor: string;
+  instructorId: Types.ObjectId;
   department: string;
   verificationCode: string;
   priority: "high" | "medium" | "low";
@@ -91,10 +91,10 @@ const certificateSchema = new Schema<ICertificate, CertificateModelType>(
       enum: ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "E+", "E"],
       required: [true, "Grade is required"],
     },
-    instructor: {
-      type: String,
-      required: [true, "Instructor name is required"],
-      trim: true,
+    instructorId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Intern",
     },
     department: {
       type: String,
@@ -122,6 +122,12 @@ const certificateSchema = new Schema<ICertificate, CertificateModelType>(
     timestamps: true,
   }
 );
+
+// Indexing for optimization and uniqueness
+certificateSchema.index({ certificateId: 1 }, { unique: true });
+certificateSchema.index({ verificationCode: 1 }, { unique: true });
+certificateSchema.index({ internId: 1 });
+certificateSchema.index({ instructorId: 1 });
 
 // ------------------------------------------------------
 // 3️⃣ Certificate Model export

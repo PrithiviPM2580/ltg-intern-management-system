@@ -191,7 +191,27 @@ internSchema.set("toJSON", {
 });
 
 // ------------------------------------------------------
-// 6️⃣ Intern Model export
+// 6️⃣ Virtuals (it will not be stored in DB and sued to query and populate data)
+// ------------------------------------------------------
+internSchema.virtual("tasksAssignedTo", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "assignedTo",
+});
+internSchema.virtual("tasksAssignedBy", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "assignedBy",
+});
+
+internSchema.virtual("certificates", {
+  ref: "Certificate",
+  localField: "_id",
+  foreignField: "internId",
+});
+
+// ------------------------------------------------------
+// 7️⃣Intern Model export
 // ------------------------------------------------------
 const InternModel = mongoose.model<IIntern, InternModelType>(
   "Intern",
