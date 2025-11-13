@@ -23,6 +23,7 @@ export interface IIntern {
   startDate?: Date;
   endDate?: Date;
   status?: "active" | "inactive" | "completed";
+  approvalStatus?: "pending" | "approved" | "rejected";
   progress?: number;
   location?: string;
   supervisorName?: string;
@@ -103,6 +104,11 @@ const internSchema = new Schema<IIntern, InternModelType, IInternMethods>(
       type: String,
       enum: ["active", "inactive", "completed"],
       default: "active",
+    },
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
     progress: {
       type: Number,

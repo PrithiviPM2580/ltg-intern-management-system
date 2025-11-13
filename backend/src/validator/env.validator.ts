@@ -19,6 +19,7 @@ const envSchema = z.object({
         .map((email) => email.trim().toLowerCase())
         .filter((email) => email.length > 0)
     ),
+  ADMIN_PASSWORD: z.string().min(8, { message: "ADMIN_PASSWORD is required" }),
 });
 
 export default envSchema;
