@@ -11,7 +11,6 @@ const envConfig = {
   LOG_LEVEL: process.env.LOG_LEVEL,
   APP_VERSION: process.env.APP_VERSION,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
 };
 
 const config = validate(envSchema, envConfig);

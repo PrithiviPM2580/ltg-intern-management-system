@@ -11,7 +11,7 @@ export const signupSchema = {
     username: z.string().min(3, "Username must be at least 3 characters long"),
     email: z.string().email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
-    role: z.enum(["intern"]).optional(),
+    role: z.enum(["admin", "intern"]).optional(),
   }),
 };
 
@@ -25,7 +25,6 @@ export const loginSchema = {
       password: z
         .string()
         .min(6, "Password must be at least 6 characters long"),
-      role: z.enum(["admin", "intern"]).optional(),
     })
     .strict(),
 };
