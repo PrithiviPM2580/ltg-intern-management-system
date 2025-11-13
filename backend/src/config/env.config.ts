@@ -11,6 +11,10 @@ const envConfig = {
   LOG_LEVEL: process.env.LOG_LEVEL,
   APP_VERSION: process.env.APP_VERSION,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  JWT_ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET,
+  JWT_REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET,
+  JWT_ACCESS_TOKEN_EXPIRATION: process.env.JWT_ACCESS_TOKEN_EXPIRATION,
+  JWT_REFRESH_TOKEN_EXPIRATION: process.env.JWT_REFRESH_TOKEN_EXPIRATION,
 };
 
 const config = validate(envSchema, envConfig);

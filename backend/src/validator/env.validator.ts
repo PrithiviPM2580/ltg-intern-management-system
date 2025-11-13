@@ -19,6 +19,14 @@ const envSchema = z.object({
         .map((email) => email.trim().toLowerCase())
         .filter((email) => email.length > 0)
     ),
+  JWT_ACCESS_TOKEN_SECRET: z
+    .string()
+    .min(1, { message: "JWT_ACCESS_TOKEN_SECRET is required" }),
+  JWT_REFRESH_TOKEN_SECRET: z
+    .string()
+    .min(1, { message: "JWT_REFRESH_TOKEN_SECRET is required" }),
+  JWT_ACCESS_TOKEN_EXPIRATION: z.string().default("15m"),
+  JWT_REFRESH_TOKEN_EXPIRATION: z.string().default("7d"),
 });
 
 export default envSchema;
