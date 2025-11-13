@@ -2,9 +2,10 @@ import type { Request, Response } from "express";
 import { ZodTypeAny } from "zod";
 
 declare global {
+  type Role = "admin" | "intern";
   type TokenPayload = {
-    userId: string;
-    role: "admin" | "intern";
+    internId: Types.ObjectId;
+    role?: "admin" | "intern";
   };
   type ErrorDetail = {
     field?: string;

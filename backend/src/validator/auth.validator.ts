@@ -12,6 +12,7 @@ export const signupSchema = {
     email: z.string().email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
     role: z.enum(["admin", "intern"]).optional(),
+    approvalStatus: z.enum(["pending", "approved", "rejected"]).optional(),
   }),
 };
 

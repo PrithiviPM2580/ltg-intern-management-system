@@ -1,23 +1,181 @@
+// ============================================
+//  🔹 Auth Service
+// ============================================
 import config from "@/config/env.config.js";
+import {
+  createIntern,
+  createToken,
+  findInternByEmail,
+  isInternEmailExist,
+} from "@/dao/auth.dao.js";
+import { generateAccessToken, generateRefreshToken } from "@/lib/jwt.lib.js";
 import logger from "@/lib/logger.lib.js";
 import APIError from "@/utils/errors.utils.js";
-import { LoginRequest } from "@/validator/auth.validator.js";
+import { generateMongooseId, sevenDaysFromNow } from "@/utils/index.utils.js";
+import type {
+  LoginRequest,
+  SignupRequest,
+} from "@/validator/auth.validator.js";
 
-export const loginService = async (data: LoginRequest) => {
-  const { email, username, password, role } = data;
-  if (role === "admin" && !config.ADMIN_EMAIL?.includes(email)) {
-    logger.warn(`Unauthorized admin login attempt: ${email}`, {
+// ------------------------------------------------------
+// 1️⃣ Register Service
+// ------------------------------------------------------
+export const signupService = async (data: SignupRequest) => {
+  const { email } = data;
+
+  const role = config.ADMIN_EMAIL.includes(email) ? "admin" : "intern";
+
+  // Intern login validation
+  const internExists = await isInternEmailExist(email);
+  if (internExists) {
+    logger.warn(`Intern already exist with email: ${email}`, {
       label: "AuthService",
     });
-    throw new APIError(401, "Unauthorized admin login attempt", {
-      type: "UnauthorizedError",
+    throw new APIError(404, "Intern already exist with the provided email", {
+      type: "NotFoundError",
       details: [
         {
           field: "email",
-          message: "Email is not registered as admin",
+          message: "No intern found with the provided email",
         },
       ],
     });
   }
-  //   const isAdminExist = await isAdminExistByEmail(email);
+
+  // Generate new intern ID
+  const internId = generateMongooseId();
+
+  // Create the intern
+  const intern = await createIntern(
+    { ...data, role: role || "intern" },
+    internId
+  );
+
+  // Access token & Refresh token generation
+  const refreshToken = generateRefreshToken({
+    internId: internId,
+    role: role || "intern",
+  });
+
+  const accessToken = generateAccessToken({
+    internId: internId,
+    role: role || "intern",
+  });
+
+  await createToken({
+    _id: generateMongooseId(),
+    internId: internId,
+    token: refreshToken,
+    expiresAt: sevenDaysFromNow(),
+  });
+
+  return {
+    intern: {
+      _id: intern._id,
+      username: intern.username,
+      email: intern.email,
+      role: intern.role,
+      approvalStatus: intern.approvalStatus,
+    },
+    accessToken,
+    refreshToken,
+  };
+};
+
+// ------------------------------------------------------
+// 2️⃣ Login Service
+// ------------------------------------------------------
+export const loginService = async (data: LoginRequest) => {
+  const { email, password } = data;
+
+  const intern = await findInternByEmail(email);
+  if (!intern) {
+    logger.error(`No intern found with email: ${email}`, {
+      label: "AuthService",
+    });
+    throw new APIError(404, "No intern found with the provided email", {
+      type: "NotFoundError",
+      details: [
+        {
+          field: "email",
+          message: "No intern found with the provided email",
+        },
+      ],
+    });
+  }
+
+  if (intern.approvalStatus !== "approved") {
+    logger.warn(`Intern with email: ${email} is not approved`, {
+      label: "AuthService",
+    });
+    throw new APIError(403, "Intern is not approved yet", {
+      type: "ForbiddenError",
+      details: [
+        {
+          field: "approvalStatus",
+          message: "Intern approval is pending or rejected",
+        },
+      ],
+    });
+  }
+
+  if (!intern.comparePassword) {
+    logger.error(
+      `Password comparison method not found for intern with email: ${email}`,
+      {
+        label: "AuthService",
+      }
+    );
+    throw new APIError(500, "Internal server error", {
+      type: "InternalServerError",
+    });
+  }
+
+  const isPasswordValid = await intern.comparePassword(password);
+  if (!isPasswordValid) {
+    logger.warn(`Invalid password for intern with email: ${email}`, {
+      label: "AuthService",
+    });
+    throw new APIError(401, "Invalid password", {
+      type: "UnauthorizedError",
+      details: [
+        {
+          field: "password",
+          message: "The provided password is incorrect",
+        },
+      ],
+    });
+  }
+
+  const userId = intern._id;
+
+  // Access token & Refresh token generation
+  const refreshToken = generateRefreshToken({
+    internId: userId,
+    role: intern.role,
+  });
+
+  const accessToken = generateAccessToken({
+    internId: userId,
+    role: intern.role,
+  });
+
+  await createToken({
+    _id: generateMongooseId(),
+    internId: userId,
+    token: refreshToken,
+    expiresAt: sevenDaysFromNow(),
+  });
+
+  return {
+    intern: {
+      _id: intern._id,
+      username: intern.username,
+      email: intern.email,
+      role: intern.role,
+      approvalStatus: intern.approvalStatus,
+    },
+    accessToken,
+    refreshToken,
+  };
 };

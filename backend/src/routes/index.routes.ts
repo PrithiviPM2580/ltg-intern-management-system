@@ -63,7 +63,12 @@ router
 	});
 
 // ------------------------------------------------------
-// 3️⃣ Not Found
+// 3️⃣ Auth Routes
+// ------------------------------------------------------
+router.use("/api/v1/auth", authRoute);
+
+// ------------------------------------------------------
+// 4️⃣ Not Found
 // ------------------------------------------------------
 router.use((req: Request, _res: Response, next: NextFunction) => {
 	next(
@@ -78,10 +83,5 @@ router.use((req: Request, _res: Response, next: NextFunction) => {
 		}),
 	);
 });
-
-// ------------------------------------------------------
-// 4️⃣ Auth Routes
-// ------------------------------------------------------
-router.use("/api/v1/auth", authRoute);
 
 export default router;
