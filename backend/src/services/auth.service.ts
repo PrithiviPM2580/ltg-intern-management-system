@@ -110,7 +110,7 @@ export const loginService = async (data: LoginRequest) => {
   }
 
   // Check if intern is approved
-  if (intern.approvalStatus !== "approved") {
+  if (intern.role === "intern" && intern.approvalStatus !== "approved") {
     logger.warn(`Intern with email: ${email} is not approved`, {
       label: "AuthService",
     });

@@ -5,11 +5,19 @@ import type { Request, Response, NextFunction } from "express";
 import logger from "@/lib/logger.lib.js";
 import APIError from "@/utils/errors.utils.js";
 import { verifyAccessToken } from "@/lib/jwt.lib.js";
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
+const { TokenExpiredError, JsonWebTokenError } = jwt;
+
+// ------------------------------------------------------
+// 1️⃣ Authenticate Middleware
+// ------------------------------------------------------
 const authenticateMiddleware = (allowRoles: string[] = []) => {
   return (req: Request, _res: Response, next: NextFunction) => {
+    // Extract the Authorization header
     const { authorization } = req.headers;
+
+    // Check if the Authorization header is present
     if (!authorization) {
       logger.warn(`No authorization header provided`, {
         label: "AuthenticateMiddleware",
@@ -27,6 +35,7 @@ const authenticateMiddleware = (allowRoles: string[] = []) => {
       );
     }
 
+    // Split the header to get the token
     const [schema, token] = authorization.split(" ");
     if (!schema || schema !== "Bearer" || !token) {
       logger.warn(`Invalid authorization header format`, {
@@ -45,7 +54,10 @@ const authenticateMiddleware = (allowRoles: string[] = []) => {
       );
     }
     try {
+      // Verify the token
       const payload = verifyAccessToken(token) as TokenPayload;
+
+      // If payload is null or undefined
       if (!payload) {
         logger.warn(`Invalid or expired token`, {
           label: "AuthenticateMiddleware",
@@ -63,6 +75,7 @@ const authenticateMiddleware = (allowRoles: string[] = []) => {
         );
       }
 
+      // Attach intern info to request object
       req.intern = payload;
       if (allowRoles.length > 0 && !allowRoles.includes(payload.role || "")) {
         logger.error(`Access denied for role: ${payload.role}`);
