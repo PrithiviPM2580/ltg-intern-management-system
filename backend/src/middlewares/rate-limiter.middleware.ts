@@ -1,3 +1,6 @@
+// ============================================
+//  🔹 Rate limit Middleware
+// ============================================
 import type { NextFunction, Request, Response } from "express";
 import {
 	type IRateLimiterOptions,
@@ -8,6 +11,9 @@ import logger from "@/lib/logger.lib.js";
 import APIError from "@/utils/errors.utils.js";
 import { keyGetter } from "@/utils/index.utils.js";
 
+// ------------------------------------------------------
+// 1️⃣ Define rate limiter options for different roles
+// ------------------------------------------------------
 const adminOptions: IRateLimiterOptions = {
 	points: 200, // 200 requests
 	duration: 60, // per 60 seconds
@@ -32,13 +38,19 @@ export const limiters = {
 	internLimiter: new RateLimiterMemory(internOptions),
 };
 
+// ------------------------------------------------------
+// 2️⃣ Rate Limiter Middleware
+// ------------------------------------------------------
 export const rateLimitMiddleware =
 	(limiter: RateLimiterMemory, getKey: (req: Request) => string = keyGetter) =>
 	async (req: Request, res: Response, next: NextFunction) => {
+		// Get the key for rate limiting (e.g., IP address or user ID)
 		const key = getKey(req);
 		try {
+			// Consume 1 point for the given key
 			const rateLimitRes: RateLimiterRes = await limiter.consume(key);
 
+			// Set rate limit headers
 			res.set({
 				"X-RateLimit-Limit": limiter.points.toString(),
 				"X-RateLimit-Remaining": rateLimitRes.remainingPoints.toString(),

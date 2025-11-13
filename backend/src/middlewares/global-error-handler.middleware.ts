@@ -1,10 +1,17 @@
+// ============================================
+//  🔹 Global error handler middleware
+// ============================================
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import APIError from "@/utils/errors.utils.js";
 import { logRequest } from "@/utils/index.utils.js";
 
+// Extract JWT error classes
 const { JsonWebTokenError, TokenExpiredError, NotBeforeError } = jwt;
 
+// ------------------------------------------------------
+// 1️⃣ Global Error Handler Middleware
+// ------------------------------------------------------
 const globalErrorHandler = (
 	err: Error,
 	req: Request,
@@ -13,8 +20,10 @@ const globalErrorHandler = (
 ): void => {
 	void next;
 
+	// Initialize customError variable
 	let customError: APIError;
 
+	// Handle specific error types
 	if (err instanceof JsonWebTokenError) {
 		logRequest({
 			req,
@@ -75,6 +84,7 @@ const globalErrorHandler = (
 		);
 	}
 
+	// Send error response
 	logRequest({
 		req,
 		res,
@@ -82,6 +92,7 @@ const globalErrorHandler = (
 		error: customError,
 	});
 
+	// Send the formatted error response
 	res.status(customError.statusCode).json({
 		success: customError.success,
 		statusCode: customError.statusCode,

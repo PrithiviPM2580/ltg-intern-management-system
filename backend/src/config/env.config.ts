@@ -1,7 +1,13 @@
+// ============================================
+//  🔹 Environment Config
+// ============================================
 import "dotenv/config";
 import validate from "@/lib/validate.lib.js";
 import envSchema from "@/validator/env.validator.js";
 
+// ------------------------------------------------------
+// 1️⃣ Environment Config
+// ------------------------------------------------------
 const envConfig = {
 	PORT: process.env.PORT,
 	NODE_ENV: process.env.NODE_ENV,
@@ -17,6 +23,7 @@ const envConfig = {
 	JWT_REFRESH_TOKEN_EXPIRATION: process.env.JWT_REFRESH_TOKEN_EXPIRATION,
 };
 
+// Validate and export the config
 const config = validate(envSchema, envConfig);
 
 export default config;

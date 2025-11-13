@@ -17,8 +17,10 @@ export const timeStampToDate = () => {
 // 2️⃣ Convert logger to logRequest with more monitoring
 // ------------------------------------------------------
 export const logRequest = ({ req, res, message, data, error }: LogOptions) => {
+	// Calculate response time
 	const responseTime = `${Date.now() - (res?.locals.startTime || 0)}ms`;
 
+	// Prepare meta information
 	const meta: Record<string, unknown> = {
 		timestamp: timeStampToDate(),
 		method: req.method,
@@ -33,9 +35,13 @@ export const logRequest = ({ req, res, message, data, error }: LogOptions) => {
 		responseTime,
 	};
 
+	// Add data and error if present
 	if (data) meta.data = data;
+
+	// Add error information if present
 	if (error) meta.error = error;
 
+	// Log info or error based on presence of error
 	error
 		? logger.error(message || "Error occurred in middleware", meta)
 		: logger.info(message || "Request completed", meta);
@@ -45,6 +51,7 @@ export const logRequest = ({ req, res, message, data, error }: LogOptions) => {
 // 3️⃣ Key getter return the userId or ip for rate-limiting
 // ------------------------------------------------------
 export const keyGetter = (req: Request): string => {
+	// Return user ID if available, otherwise return IP address
 	if (req.intern?.internId) {
 		return `user-${req.intern.internId.toString()}`;
 	} else {
@@ -62,12 +69,15 @@ export const successResponse = <T>(
 	message: string,
 	data?: T,
 ) => {
+	// Log the request
 	logRequest({
 		req,
 		res,
 		message,
 		data,
 	});
+
+	// Send JSON response
 	return res.status(statusCode).json({
 		success: true,
 		statusCode,
@@ -80,6 +90,7 @@ export const successResponse = <T>(
 // 5️⃣ Format Zod validation issues
 // --------------------------------------------------------
 export const formatIssues = (issues: ZodError["issues"]) => {
+	// Map Zod issues to a more readable format
 	return issues.map((issue) => ({
 		field: issue.path.join("."),
 		message: issue.message,

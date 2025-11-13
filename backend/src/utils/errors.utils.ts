@@ -1,7 +1,14 @@
+// ============================================
+//  🔹 Error utils
+// ============================================
 class APIError extends Error {
-	public readonly statusCode: number;
-	public readonly success: boolean;
-	public readonly error?: APIErrorType;
+	public readonly statusCode: number; // HTTP status code
+	public readonly success: boolean; // Indicates if the operation was successful
+	public readonly error?: APIErrorType; // Additional error details
+
+	// ------------------------------------------------------
+	// 1️⃣ APIError Constructor
+	// ------------------------------------------------------
 
 	constructor(
 		statusCode: number = 500,
@@ -9,12 +16,14 @@ class APIError extends Error {
 		error?: APIErrorType,
 		stack?: string,
 	) {
+		// Call the parent constructor
 		super(message);
 		this.name = this.constructor.name;
 		this.statusCode = statusCode;
 		this.success = false;
 		this.error = error;
 
+		// Capture stack trace
 		if (stack) {
 			this.stack = stack;
 		} else {

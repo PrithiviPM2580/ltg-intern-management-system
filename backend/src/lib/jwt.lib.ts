@@ -14,6 +14,7 @@ const signToken = <T extends object>(
 	secret: string,
 	expiresIn: string | number,
 ): string => {
+	// Sign and return the JWT
 	return jwt.sign(payload, secret, {
 		expiresIn: expiresIn as SignOptions["expiresIn"],
 	});
@@ -27,6 +28,7 @@ const verifyToken = <T extends object>(
 	secret: string,
 ): T | null => {
 	try {
+		// Verify and return the decoded token payload
 		return jwt.verify(token, secret) as T;
 	} catch (error) {
 		logger.error("Token verification failed:", {

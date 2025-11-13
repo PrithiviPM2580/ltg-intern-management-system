@@ -126,3 +126,5 @@ const SubmissionModel = mongoose.model<ISubmission, SubmissionModelType>(
 	"Submission",
 	submissionSchema,
 );
+
+export default SubmissionModel;

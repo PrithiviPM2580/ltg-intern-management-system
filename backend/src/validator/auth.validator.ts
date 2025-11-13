@@ -7,27 +7,27 @@ import { z } from "zod";
 // 1️⃣ Signup Schema
 // ------------------------------------------------------
 export const signupSchema = {
-  body: z.object({
-    username: z.string().min(3, "Username must be at least 3 characters long"),
-    email: z.string().email("Invalid email format"),
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-    role: z.enum(["admin", "intern"]).optional(),
-    approvalStatus: z.enum(["pending", "approved", "rejected"]).optional(),
-  }),
+	body: z.object({
+		username: z.string().min(3, "Username must be at least 3 characters long"),
+		email: z.string().email("Invalid email format"),
+		password: z.string().min(6, "Password must be at least 6 characters long"),
+		role: z.enum(["admin", "intern"]).optional(),
+		approvalStatus: z.enum(["pending", "approved", "rejected"]).optional(),
+	}),
 };
 
 // ------------------------------------------------------
 // 2️⃣ Login Schema
 // ------------------------------------------------------
 export const loginSchema = {
-  body: z
-    .object({
-      email: z.string().email("Invalid email format"),
-      password: z
-        .string()
-        .min(6, "Password must be at least 6 characters long"),
-    })
-    .strict(),
+	body: z
+		.object({
+			email: z.string().email("Invalid email format"),
+			password: z
+				.string()
+				.min(6, "Password must be at least 6 characters long"),
+		})
+		.strict(),
 };
 
 // ------------------------------------------------------

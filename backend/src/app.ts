@@ -1,8 +1,9 @@
 // ============================================
-//  🔹 App Section
+//  🔹 App
 // ============================================
 import express, { type Express } from "express";
 
+// Create Express app
 const app: Express = express();
 
 // ------------------------------------------------------
@@ -16,7 +17,6 @@ import requestTimerMiddleware from "./middlewares/request-timer.middleware.js";
 // ------------------------------------------------------
 // 2️⃣ Middleware
 // ------------------------------------------------------
-
 app.use(compressionMiddleware); // use to compress responses
 app.use(express.json()); // parse application/json so in the req.body we get json object
 app.use(express.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded

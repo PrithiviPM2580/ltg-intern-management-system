@@ -17,10 +17,12 @@ const signupController = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
+	// Call signup service
 	const { intern, accessToken, refreshToken } = await signupService(
 		req.body as SignupRequest,
 	);
 
+	// Validate service response
 	if (!intern || !accessToken || !refreshToken) {
 		return next(
 			new APIError(500, " Internal Server Error", {
@@ -35,8 +37,10 @@ const signupController = async (
 		);
 	}
 
+	// Set refresh token in HTTP-only cookie
 	cookie.set(res, "refreshToken", refreshToken);
 
+	// Send success response
 	successResponse(req, res, 201, "Intern registered successfully", {
 		intern,
 		accessToken,
