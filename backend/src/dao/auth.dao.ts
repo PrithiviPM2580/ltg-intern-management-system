@@ -41,3 +41,10 @@ export const createIntern = async (
 export const createToken = async (data: IToken) => {
   await TokenModel.create(data);
 };
+
+// ------------------------------------------------------
+// 5️⃣ Dao to delete the refresh token
+// ------------------------------------------------------
+export const deleteRefreshToken = async (internId: Types.ObjectId) => {
+  return TokenModel.deleteOne({ internId });
+};

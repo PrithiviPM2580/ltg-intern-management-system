@@ -6,11 +6,13 @@ import loginContoller from "@/controllers/auth/login.controller.js";
 import signupController from "@/controllers/auth/sign-up.controller.js";
 import asyncHandler from "@/middlewares/async-handler.middleware.js";
 import {
-	limiters,
-	rateLimitMiddleware,
+  limiters,
+  rateLimitMiddleware,
 } from "@/middlewares/rate-limiter.middleware.js";
 import validateRequestMiddleware from "@/middlewares/validate-request.middleware.js";
 import { loginSchema, signupSchema } from "@/validator/auth.validator.js";
+import logoutController from "@/controllers/auth/logout.controller.js";
+import authenticateMiddleware from "@/middlewares/authenticate.middleware.js";
 
 // Create a new router instance
 const router = Router();
@@ -19,18 +21,27 @@ const router = Router();
 // 1️⃣ Signup Route
 // ------------------------------------------------------
 router.route("/sign-up").post(
-	validateRequestMiddleware(signupSchema),
-	rateLimitMiddleware(limiters.authLimiter, (req) => req.ip as string),
-	asyncHandler(signupController),
+  validateRequestMiddleware(signupSchema),
+  rateLimitMiddleware(limiters.authLimiter, (req) => req.ip as string),
+  asyncHandler(signupController)
 );
 
 // ------------------------------------------------------
 // 2️⃣ Login Route
 // ------------------------------------------------------
 router.route("/login").post(
-	validateRequestMiddleware(loginSchema),
-	rateLimitMiddleware(limiters.authLimiter, (req) => req.ip as string),
-	asyncHandler(loginContoller),
+  validateRequestMiddleware(loginSchema),
+  rateLimitMiddleware(limiters.authLimiter, (req) => req.ip as string),
+  asyncHandler(loginContoller)
+);
+
+// ------------------------------------------------------
+// 3️⃣ Logout Route
+// ------------------------------------------------------
+router.route("/logout").post(
+  rateLimitMiddleware(limiters.authLimiter, (req) => req.ip as string),
+  authenticateMiddleware(),
+  asyncHandler(logoutController)
 );
 
 export default router;

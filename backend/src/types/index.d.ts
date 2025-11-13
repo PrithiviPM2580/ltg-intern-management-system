@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
+import { Types } from "mongoose";
 import { ZodTypeAny } from "zod";
 
 declare global {
   type Role = "admin" | "intern";
   type TokenPayload = {
-    internId: Types.ObjectId;
+    internId?: Types.ObjectId;
     role?: "admin" | "intern";
   };
   type ErrorDetail = {

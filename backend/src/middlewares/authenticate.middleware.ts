@@ -1,11 +1,14 @@
+// ============================================
+//  🔹 Authentication Middleware
+// ============================================
 import type { Request, Response, NextFunction } from "express";
 import logger from "@/lib/logger.lib.js";
 import APIError from "@/utils/errors.utils.js";
 import { verifyAccessToken } from "@/lib/jwt.lib.js";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
-const authenticateMiddleware = async (allowRoles: string[] = []) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+const authenticateMiddleware = (allowRoles: string[] = []) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
     if (!authorization) {
       logger.warn(`No authorization header provided`, {

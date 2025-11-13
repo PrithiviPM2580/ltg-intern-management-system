@@ -5,6 +5,7 @@ import config from "@/config/env.config.js";
 import {
   createIntern,
   createToken,
+  deleteRefreshToken,
   findInternByEmail,
   isInternEmailExist,
 } from "@/dao/auth.dao.js";
@@ -16,6 +17,7 @@ import type {
   LoginRequest,
   SignupRequest,
 } from "@/validator/auth.validator.js";
+import { Types } from "mongoose";
 
 // ------------------------------------------------------
 // 1️⃣ Register Service
@@ -62,6 +64,7 @@ export const signupService = async (data: SignupRequest) => {
     role: role || "intern",
   });
 
+  // Store refresh token in DB
   await createToken({
     _id: generateMongooseId(),
     internId: internId,
@@ -69,6 +72,7 @@ export const signupService = async (data: SignupRequest) => {
     expiresAt: sevenDaysFromNow(),
   });
 
+  // Return intern data along with tokens
   return {
     intern: {
       _id: intern._id,
@@ -88,6 +92,7 @@ export const signupService = async (data: SignupRequest) => {
 export const loginService = async (data: LoginRequest) => {
   const { email, password } = data;
 
+  // Intern login validation
   const intern = await findInternByEmail(email);
   if (!intern) {
     logger.error(`No intern found with email: ${email}`, {
@@ -104,6 +109,7 @@ export const loginService = async (data: LoginRequest) => {
     });
   }
 
+  // Check if intern is approved
   if (intern.approvalStatus !== "approved") {
     logger.warn(`Intern with email: ${email} is not approved`, {
       label: "AuthService",
@@ -119,6 +125,7 @@ export const loginService = async (data: LoginRequest) => {
     });
   }
 
+  // Validate password
   if (!intern.comparePassword) {
     logger.error(
       `Password comparison method not found for intern with email: ${email}`,
@@ -131,6 +138,7 @@ export const loginService = async (data: LoginRequest) => {
     });
   }
 
+  // Validate password
   const isPasswordValid = await intern.comparePassword(password);
   if (!isPasswordValid) {
     logger.warn(`Invalid password for intern with email: ${email}`, {
@@ -160,6 +168,7 @@ export const loginService = async (data: LoginRequest) => {
     role: intern.role,
   });
 
+  // Store refresh token in DB
   await createToken({
     _id: generateMongooseId(),
     internId: userId,
@@ -167,6 +176,7 @@ export const loginService = async (data: LoginRequest) => {
     expiresAt: sevenDaysFromNow(),
   });
 
+  // Return intern data along with tokens
   return {
     intern: {
       _id: intern._id,
@@ -178,4 +188,40 @@ export const loginService = async (data: LoginRequest) => {
     accessToken,
     refreshToken,
   };
+};
+
+// ------------------------------------------------------
+// 3️⃣ Logout Service
+// ------------------------------------------------------
+export const logoutService = async (
+  internId?: Types.ObjectId
+): Promise<boolean> => {
+  if (!internId) {
+    logger.error(`Intern ID is required for logout`, {
+      label: "AuthService",
+    });
+    throw new APIError(400, "Bad Request - Intern ID is required", {
+      type: "BadRequestError",
+      details: [
+        {
+          field: "internId",
+          message: "Intern ID is required for logout",
+        },
+      ],
+    });
+  }
+
+  const isRefreshTokenDeleted = await deleteRefreshToken(internId);
+  if (!isRefreshTokenDeleted.acknowledged) {
+    logger.error(`Failed to delete refresh token for intern ID: ${internId}`, {
+      label: "AuthService",
+    });
+    throw new APIError(500, "Internal Server Error - Logout failed", {
+      type: "InternalServerError",
+    });
+  }
+  logger.info(`Intern with ID: ${internId} logged out successfully`, {
+    label: "AuthService",
+  });
+  return true;
 };
