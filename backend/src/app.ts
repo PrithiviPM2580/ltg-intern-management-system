@@ -1,8 +1,9 @@
 // ============================================
 //  🔹 App
 // ============================================
-import express, { type Express } from "express";
+
 import cookieParser from "cookie-parser";
+import express, { type Express } from "express";
 
 // Create Express app
 const app: Express = express();
