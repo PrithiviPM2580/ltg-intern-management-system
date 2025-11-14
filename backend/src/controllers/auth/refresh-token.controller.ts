@@ -5,8 +5,8 @@ import cookie from "@/lib/cookie.lib.js";
 import logger from "@/lib/logger.lib.js";
 import { refreshTokenService } from "@/services/auth.service.js";
 // import { refreshTokenService } from "@/services/auth.service.js";
-import APIError from "@/utils/errors.utils.js";
-import { successResponse } from "@/utils/index.utils.js";
+import APIError from "@/utils/errors.util.js";
+import { successResponse } from "@/utils/index.util.js";
 import type { Request, Response, NextFunction } from "express";
 
 // ------------------------------------------------------

@@ -1,3 +1,5 @@
+https://github.com/material-extensions/vscode-material-icon-theme/blob/main/images/folderIcons.png
+https://github.com/material-extensions/vscode-material-icon-theme/blob/main/images/fileIcons.png
 🎯 Big Picture: What You’re Building
 
 You’re building a full web application, not just a dashboard.

@@ -6,8 +6,8 @@ import type { NextFunction, Request, Response } from "express";
 import cookie from "@/lib/cookie.lib.js";
 import logger from "@/lib/logger.lib.js";
 import { logoutService } from "@/services/auth.service.js";
-import APIError from "@/utils/errors.utils.js";
-import { successResponse } from "@/utils/index.utils.js";
+import APIError from "@/utils/errors.util.js";
+import { successResponse } from "@/utils/index.util.js";
 import { verifyRefreshToken } from "@/lib/jwt.lib.js";
 
 // ------------------------------------------------------

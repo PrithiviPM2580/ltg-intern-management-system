@@ -18,8 +18,8 @@ import {
   verifyRefreshToken,
 } from "@/lib/jwt.lib.js";
 import logger from "@/lib/logger.lib.js";
-import APIError from "@/utils/errors.utils.js";
-import { generateMongooseId, sevenDaysFromNow } from "@/utils/index.utils.js";
+import APIError from "@/utils/errors.util.js";
+import { generateMongooseId, sevenDaysFromNow } from "@/utils/index.util.js";
 import type {
   LoginRequest,
   SignupRequest,
